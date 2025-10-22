@@ -1,0 +1,7 @@
+Установка PHP:
+sudo apt install php-fpm php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip -y
+
+Nginx конфиг с PHP для WordPress:
+Пути
+WordPress установлен в: /var/www/wordpress
+PHP-FPM использует сокет /run/php/php8.4-fpm.sock (если у тебя другая версия PHP — поменяй)

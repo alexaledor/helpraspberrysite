@@ -1,0 +1,99 @@
+Установка phpMyAdmin
+sudo apt update
+sudo apt install phpmyadmin -y
+
+Выбираем Yes для настройки базы данных phpMyAdmin через dbconfig-common.
+Когда установщик пишет ошибку, выбираем:
+abort
+Пропускаем автоматическую установку базы
+
+Создаём пользователя для phpMyAdmin вручную
+sudo mariadb -u root -p
+
+CREATE USER 'pmauser'@'localhost' IDENTIFIED BY 'StrongPmaPass123';
+GRANT ALL PRIVILEGES ON *.* TO 'pmauser'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+EXIT;
+
+Настраиваем phpMyAdmin для ручного подключения
+sudo nano /etc/phpmyadmin/config.inc.php
+
+Добавляем или изменяем:
+/* Authentication type */
+$cfg['Servers'][$i]['auth_type'] = 'cookie';
+$cfg['Servers'][$i]['user'] = 'pmauser';
+$cfg['Servers'][$i]['password'] = 'StrongPmaPass123';
+
+Проверяем Nginx
+sudo nginx -t
+sudo systemctl reload nginx
+
+открой в браузере:
+http://192.168.0.3/phpmyadmin
+И авторизуйся через pmauser / StrongPmaPass123.
+
+Якщо:
+Page not found
+Nginx не находит путь к phpMyAdmin
+Создаём snippet для phpMyAdmin
+sudo nano /etc/nginx/snippets/phpmyadmin.conf
+
+location /phpmyadmin {
+    root /usr/share/;
+    index index.php index.html index.htm;
+    location ~ ^/phpmyadmin/(.+\.php)$ {
+        try_files $uri =404;
+        root /usr/share/;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+    location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+        root /usr/share/;
+    }
+}
+
+Заменяй php8.4-fpm.sock на свой сокет, если PHP другая версия (ls /run/php/).
+
+Подключаем snippet в конфиг сайта
+sudo nano /etc/nginx/sites-available/wordpress
+
+Внутри блока server { ... } добавляем в конце:
+include snippets/phpmyadmin.conf;
+
+Проверяем конфиг и перезагружаем Nginx
+sudo nginx -t
+sudo systemctl reload nginx
+
+Проверяем в браузере
+http://192.168.0.3/phpmyadmin
+страница авторизации phpMyAdmin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

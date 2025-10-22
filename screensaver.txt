@@ -1,0 +1,26 @@
+Перевірити, чи встановлено xscreensaver:
+sudo apt list --installed | grep xscreensaver
+
+встановити:
+sudo apt install xscreensaver -y
+
+зявився пункт XScreenSaver Settings але нічого не відкривається
+xscreensaver -no-splash &
+
+Menu → Preferences → XScreenSaver Settings
+
+Щоб xscreensaver запускався автоматично при старті
+nano ~/.config/lxsession/LXDE-pi/autostart
+Додай цей рядок у кінець файлу:
+@xscreensaver -no-splash
+Ctrl + O, Enter, Ctrl + X
+
+якщо: WARNING Wayland not supported
+Увімкнути X11
+sudo raspi-config
+Advanced Options → Wayland
+X11
+sudo reboot
+
+
+

@@ -1,0 +1,72 @@
+Перевір, чи є SSH-ключ:
+ls ~/.ssh/id_rsa.pub
+
+Якщо нема — створи:
+ssh-keygen -t ed25519 -C "your_email@example.com"
+
+Скопіюй вміст ключа:
+cat ~/.ssh/id_ed25519.pub
+
+Додай його у GitHub:
+https://github.com/settings/keys → New SSH key
+
+Зміна remote на SSH:
+git remote set-url origin git@github.com:alexaledor/scp.git
+
+тепер push працюватиме без токенів:
+git push -u origin master
+-----------------------------------------------------------------------------------------------------
+Якщо:
+ls ~/.ssh/id_rsa.pub ls: cannot access '/c/Users/alex/.ssh/id_rsa.pub': No such file or directory
+ще немає SSH-ключа на машині
+
+Додавання ключа в SSH-агент: (якщо ключ вже створений)
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_ed25519
+
+Перевірка підключення:
+ssh -T git@github.com
+Якщо все добре, побачиш:
+Hi alexaledor! You've successfully authenticated, but GitHub does not provide shell access.
+
+Якщо:
+$ ssh -T git@github.com 
+The authenticity of host 'github.com (140.82.121.4)' can't be established. ED25519 key fingerprint is SHA256:+DiY3wvvV6TuJJhbpZisF/zLDA0zPMSvHdkr4UvCOqU. This key is not known by any other names. Are you sure you want to continue connecting (yes/no/[fingerprint])?
+Це нормально — ти просто вперше підключаєшся до GitHub через SSH на цій машині.
+Просто введи: yes
+
+Якщо:
+git remote set-url origin https://alexaldor@github.com/alexaledor/scp.git 
+error: No such remote 'origin' - ще не налаштовано жодного remote
+Якщо ти ще не додавав remote:
+git remote add origin git@github.com:alexaledor/scp.git
+Потім перевір, що він з’явився:
+git remote -v
+Побачиш щось таке:
+origin  git@github.com:alexaledor/scp.git (fetch)
+origin  git@github.com:alexaledor/scp.git (push)
+
+прив’язати твою локальну гілку master до віддаленої origin/master
+git branch --set-upstream-to=origin/master master
+
+Якщо:
+$ git pull 
+fatal: refusing to merge unrelated histories - твій локальний репозиторій і віддалений (GitHub) мають різну історію комітів
+
+Якщо:
+git push -u origin master 
+error: src refspec master does not match any 
+error: failed to push some refs to 'github.com:alexaledor/scp.git' - каже, що локальної гілки master взагалі немає
+
+
+
+
+
+
+
+
+
+
+
+
+

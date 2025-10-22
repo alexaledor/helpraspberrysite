@@ -1,0 +1,46 @@
+Отримання SSL-сертифікату (Let’s Encrypt)
+
+Встанови Certbot:
+sudo apt install certbot python3-certbot-nginx -y
+
+Налаштуй домен (обов’язково, потрібен реальний домен, наприклад example.com)
+На DNS-домені зроби A-запис на зовнішній IP твого Netis WF2780 - 195.158.196.129
+
+На роутері Netis WF2780 відкрий порти:
+80 TCP → 192.168.1.100 (HTTP, для верифікації Certbot)
+443 TCP → 192.168.1.100 (HTTPS)
+
+Запусти Certbot для автоматичного налаштування HTTPS:
+sudo certbot --nginx -d example.com
+
+Примусове HTTPS
+Certbot зазвичай пропонує автоматичне перенаправлення HTTP → HTTPS.
+Якщо ні, додай у конфігурацію Nginx:
+server {
+    listen 80;
+    server_name example.com;
+    return 301 https://$host$request_uri;
+}
+
+
+Перезавантаж Nginx:
+sudo systemctl reload nginx
+
+Додаткові налаштування безпеки
+SSH через ключі, змінити стандартний порт 22.
+
+Регулярні оновлення:
+sudo apt update && sudo apt upgrade -y
+
+Можна обмежити доступ до Pi через фаєрвол (ufw):
+sudo apt install ufw
+sudo ufw allow 22
+sudo ufw allow 80
+sudo ufw allow 443
+sudo ufw enable
+
+Після цього у тебе буде:
+Raspberry Pi 5 у локальній мережі за Netis WF2780
+Сайт-візитка з HTTPS
+Безпечний доступ через Інтернет
+

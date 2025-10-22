@@ -1,0 +1,11 @@
+перед копіюванням скопіювати спочатку в домашню папку користувача, а потім через sudo mv перемістити:
+mv ~/your_site /var/www/
+
+Через команду scp з Windows
+scp -r C:\шлях\до\файлів username@server_ip:/home/username/
+scp -r F:\01_BackUP\BackUP_Sites\2025_09_07\piano.in.ua alex@192.168.0.3:/home/alex/site_piano.in.ua
+
+Потім на сервері перемістити в /var/www через SSH:
+sudo mv /home/username/your_site /var/www/
+sudo chown -R www-data:www-data /var/www/your_site   # якщо це вебсервер
+

@@ -1,0 +1,27 @@
+намагаюсь зробити імпорт ourtvdoro.sql (7.8 Mb) через phpmyadmin отримую помилку 413 Request Entity Too Large от nginx
+
+Використати командний рядок:
+mysql -u username -p database_name < /шлях/до/ourtvdoro.sql
+
+Це швидко і не залежить від обмежень phpMyAdmin/Nginx.
+
+для Nginx:
+sudo nano /etc/nginx/sites-available/default - конфігураційний файл вашого сайту
+
+в /etc/nginx/nginx.conf - конфігурація Nginx
+додати:
+server {
+    ...
+    client_max_body_size 20M;
+    ...
+}
+перезавантажити: sudo systemctl reload nginx 
+
+для PHP:
+sudo nano /etc/php/8.4/fpm/php.ini
+додати:
+upload_max_filesize = 20M
+post_max_size = 20M
+memory_limit = 128M
+Перезапустити: 
+sudo systemctl restart php8.2-fpm

@@ -1,0 +1,63 @@
+Репозитории по умолчанию больше не содержат пакет mysql-server, вместо этого рекомендуется использовать MariaDB, который полностью совместим с MySQL.
+
+Установка MariaDB
+sudo apt update
+sudo apt install mariadb-server mariadb-client -y
+
+Проверка статуса службы
+sudo systemctl status mariadb
+
+Проверка процесса через ps
+ps aux | grep mysqld
+
+Проверка порта
+sudo netstat -tulnp | grep 3306
+
+Базовая настройка безопасности:
+sudo mysql -u root -p
+В MySQL:
+CREATE DATABASE wordpress CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'wpuser'@'localhost' IDENTIFIED BY 'StrongPassword123';
+GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+Якщо:
+sudo: mysql_secure_installation: command not found
+можно сделать всё вручную через консоль MariaDB
+Запускаем MariaDB:
+sudo mariadb
+Настройка безопасности вручную:
+-- Устанавливаем пароль для root
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'StrongPassword123';
+
+-- Удаляем анонимных пользователей
+DELETE FROM mysql.user WHERE User='';
+
+-- Запрещаем удаленный доступ для root
+UPDATE mysql.user SET Host='localhost' WHERE User='root';
+
+-- Удаляем тестовую базу
+DROP DATABASE IF EXISTS test;
+
+-- Перезагружаем привилегии
+FLUSH PRIVILEGES;
+EXIT;
+
+
+Создание базы и пользователя для WordPress
+sudo mariadb -u root -p
+CREATE DATABASE wordpress CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'wpuser'@'localhost' IDENTIFIED BY 'StrongPassword123';
+GRANT ALL PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost';
+FLUSH PRIVILEGES;
+EXIT;
+
+
+
+
+
+
+
+
+

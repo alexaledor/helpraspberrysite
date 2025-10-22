@@ -1,0 +1,175 @@
+Открой терминал на Raspberry Pi и выполни:
+sudo apt update
+sudo apt upgrade -y
+
+Установка Nginx
+sudo apt install nginx -y
+Проверим, что Nginx запущен:
+sudo systemctl status nginx
+
+Настройка firewall 
+sudo ufw allow 'Nginx Full'
+sudo ufw enable
+sudo ufw status
+
+Настройка статического IP:
+interface eth0
+static ip_address=192.168.1.100/24
+static routers=192.168.1.1
+static domain_name_servers=192.168.1.1 8.8.8.8
+Перезагрузись:
+sudo reboot
+
+Конфиг Nginx
+sudo nano /etc/nginx/sites-available/wordpress
+server {
+    listen 80;
+    server_name _;  # можно заменить на твой домен или внешний IP
+
+    root /var/www/wordpress;
+    index index.php index.html index.htm;
+
+    # Основной location
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    # Обработка PHP
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+    }
+
+    # Защита .htaccess и других скрытых файлов
+    location ~ /\. {
+        deny all;
+    }
+
+    # Настройки кеширования для статики
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|woff|woff2|ttf|svg)$ {
+        expires 30d;
+        access_log off;
+    }
+
+    # Логи
+    access_log /var/log/nginx/wordpress_access.log;
+    error_log /var/log/nginx/wordpress_error.log;
+}
+
+Включаем сайт
+sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+
+Права на файлы
+sudo chown -R www-data:www-data /var/www/wordpress
+sudo chmod -R 755 /var/www/wordpress
+
+Проверка
+http://http://192.168.0.3
+
+Якщо бачу Welcome to nginx!
+Отключаем дефолтный сайт
+sudo rm /etc/nginx/sites-enabled/default
+sudo systemctl reload nginx
+
+Включаем наш сайт
+sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+
+Проверка
+http://http://192.168.0.3
+
+Якщо:
+sudo ln -s /etc/nginx/sites-available/wordpress /etc/nginx/sites-enabled/ 
+ln: failed to create symbolic link '/etc/nginx/sites-enabled/wordpress': File exists 
+нужно обновить конфиг и перезагрузить Nginx.
+Проверяем активные сайты
+ls -l /etc/nginx/sites-enabled/
+
+Проверяем конфиг
+sudo nginx -t
+
+Перезагружаем Nginx
+sudo systemctl reload nginx
+
+Якщо: 
+sudo rm /etc/nginx/sites-enabled/default
+rm: cannot remove '/etc/nginx/sites-enabled/default': No such file or directory
+значит дефолтный сайт уже удалён
+
+Проверяем активные сайты
+ls -l /etc/nginx/sites-enabled/
+
+Якщо: по http://192.168.0.3/ получил 502 Bad Gateway
+502 Bad Gateway обычно появляется, когда Nginx не может достучаться до PHP-FPM
+Проверяем установленный PHP и PHP-FPM
+php -v
+Проверим, есть ли сокет PHP-FPM:
+ls /run/php/
+має бути файл типу php8.4-fpm.sock
+
+Проверяем, что PHP-FPM работает
+sudo systemctl status php8.4-fpm
+якщо сервис не запущен
+sudo systemctl enable php8.4-fpm
+sudo systemctl start php8.4-fpm
+
+Проверяем конфиг Nginx
+sudo nano /etc/nginx/sites-available/wordpress
+убедись, что стоит правильный путь к сокету:
+fastcgi_pass unix:/run/php/php8.4-fpm.sock;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
