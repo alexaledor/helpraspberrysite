@@ -1,6 +1,7 @@
 Отримання SSL-сертифікату (Let’s Encrypt)
 
-Встанови Certbot:
+Встанови Certbot та плагін для Nginx:
+sudo apt update
 sudo apt install certbot python3-certbot-nginx -y
 
 Налаштуй домен (обов’язково, потрібен реальний домен, наприклад example.com)
@@ -10,8 +11,19 @@ sudo apt install certbot python3-certbot-nginx -y
 80 TCP → 192.168.1.100 (HTTP, для верифікації Certbot)
 443 TCP → 192.168.1.100 (HTTPS)
 
-Запусти Certbot для автоматичного налаштування HTTPS:
-sudo certbot --nginx -d example.com
+Перевір, що домен доступний через HTTP
+Переконайся, що http://piano.in.ua відкривається.
+Nginx вже обслуговує сайт із /var/www/piano.in.ua.
+
+Генерація SSL сертифікату та автоматична настройка Nginx
+sudo certbot --nginx -d piano.in.ua -d www.piano.in.ua
+
+Перевір роботу HTTPS
+https://piano.in.ua
+
+Автооновлення сертифікатів
+Сertbot автоматично додає cron для оновлення сертифікату.
+sudo certbot renew --dry-run
 
 Примусове HTTPS
 Certbot зазвичай пропонує автоматичне перенаправлення HTTP → HTTPS.
@@ -22,7 +34,6 @@ server {
     return 301 https://$host$request_uri;
 }
 
-
 Перезавантаж Nginx:
 sudo systemctl reload nginx
 
@@ -32,15 +43,7 @@ SSH через ключі, змінити стандартний порт 22.
 Регулярні оновлення:
 sudo apt update && sudo apt upgrade -y
 
-Можна обмежити доступ до Pi через фаєрвол (ufw):
-sudo apt install ufw
-sudo ufw allow 22
-sudo ufw allow 80
-sudo ufw allow 443
-sudo ufw enable
-
 Після цього у тебе буде:
 Raspberry Pi 5 у локальній мережі за Netis WF2780
 Сайт-візитка з HTTPS
 Безпечний доступ через Інтернет
-

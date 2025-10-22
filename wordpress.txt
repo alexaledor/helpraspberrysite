@@ -1,0 +1,61 @@
+#в мене зараз на piano.in.ua There has been a critical error on this website.
+
+Увімкни відлагодження WordPress:
+sudo nano /var/www/piano.in.ua/wp-config.php
+
+Знайди (або додай перед /* That's all, stop editing */):
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true);
+define('WP_DEBUG_DISPLAY', true);
+
+це DateTimeZone::__construct(): Unknown or bad timezone (Europe/Kiev).
+
+/* Додати після цього рядка */
+define('WP_DEFAULT_TIMEZONE', 'Europe/Kyiv');
+
+Переконайся, що PHP підтримує часові пояси
+sudo apt install tzdata
+sudo dpkg-reconfigure tzdata
+
+Очисти кеш браузера.
+Перезапусти PHP-FPM:
+sudo systemctl restart php8.4-fpm
+Перезапусти Nginx
+sudo systemctl reload nginx
+
+Якщо:
+Deprecated warnings (BackupWordPress плагін)
+
+Тимчасово вимкнути відображення Deprecated warnings у PHP.
+// Вимикаємо показ Deprecated warnings
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+@ini_set('display_errors', 0);
+
+Або оновити плагін BackupWordPress до останньої версії, сумісної з PHP 8.4.
+
+Якщо:
+Fatal error: DateInvalidTimeZoneException
+// Встановлюємо правильний часовий пояс
+define('WP_DEFAULT_TIMEZONE', 'Europe/Kyiv');
+
+Якщо WP_DEFAULT_TIMEZONE не спрацює, потрібно змінити timezone у базі даних WordPress:
+UPDATE wp_options SET option_value = 'Europe/Kyiv' WHERE option_name = 'timezone_string';
+
+Перезавантаж PHP-FPM після змін:
+sudo systemctl restart php8.4-fpm
+
+Перезапусти Nginx
+sudo systemctl reload nginx
+
+Якщо:
+корень сайту запрацював, але по http://piano.in.ua/biography/ отримую 404
+
+Відкрий конфігураційний файл сайту:
+sudo nano /etc/nginx/sites-available/piano.in.ua
+Замінити або доповнити блок location / на наступний:
+location / {
+    try_files $uri $uri/ /index.php?$args;
+}
+
+sudo nginx -t
+sudo systemctl reload nginx

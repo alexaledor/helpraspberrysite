@@ -1,0 +1,110 @@
+Вимкни старий сайт:
+sudo unlink /etc/nginx/sites-enabled/wordpress
+
+Створи конфігураційний файл
+sudo nano /etc/nginx/sites-available/piano.in.ua
+
+Якщо не впевнений, яка в тебе версія PHP, перевір:
+ls /var/run/php/
+
+Встав цей базовий робочий конфіг:
+server {
+    listen 80;
+    server_name piano.in.ua www.piano.in.ua;
+
+    root /var/www/piano.in.ua;
+    index index.php index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    location /phpmyadmin {
+        root /usr/share/;
+        index index.php index.html index.htm;
+
+        location ~ ^/phpmyadmin/(.+\.php)$ {
+            root /usr/share/;
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        }
+
+        location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+            root /usr/share/;
+        }
+    }
+
+    client_max_body_size 20M;
+}
+
+server {
+    listen 443 ssl;
+    server_name piano.in.ua www.piano.in.ua;
+
+    root /var/www/piano.in.ua;
+    index index.php index.html index.htm;
+
+    ssl_certificate /etc/letsencrypt/live/piano.in.ua/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/piano.in.ua/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    location / {
+        try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+
+    location /phpmyadmin {
+        root /usr/share/;
+        index index.php index.html index.htm;
+
+        location ~ ^/phpmyadmin/(.+\.php)$ {
+            root /usr/share/;
+            include snippets/fastcgi-php.conf;
+            fastcgi_pass unix:/var/run/php/php8.4-fpm.sock;
+        }
+
+        location ~* ^/phpmyadmin/(.+\.(jpg|jpeg|gif|css|png|js|ico|html|xml|txt))$ {
+            root /usr/share/;
+        }
+    }
+
+    client_max_body_size 20M;
+}
+
+
+
+Перевір конфігурацію
+sudo nginx -t
+
+Перезапусти Nginx
+sudo systemctl reload nginx
+
+Переконайся, що права на папку правильні
+sudo chown -R www-data:www-data /var/www/piano.in.ua
+sudo chmod -R 755 /var/www/piano.in.ua
+
+Активуй сайт
+sudo ln -s /etc/nginx/sites-available/piano.in.ua /etc/nginx/sites-enabled/
+
+відкриєш у браузері:
+http://piano.in.ua
+
+
