@@ -7,19 +7,6 @@ sudo apt install nginx -y
 Проверим, что Nginx запущен:
 sudo systemctl status nginx
 
-Настройка firewall 
-sudo ufw allow 'Nginx Full'
-sudo ufw enable
-sudo ufw status
-
-Настройка статического IP:
-interface eth0
-static ip_address=192.168.1.100/24
-static routers=192.168.1.1
-static domain_name_servers=192.168.1.1 8.8.8.8
-Перезагрузись:
-sudo reboot
-
 Конфиг Nginx
 sudo nano /etc/nginx/sites-available/wordpress
 server {
