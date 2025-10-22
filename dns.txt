@@ -1,0 +1,12 @@
+sudo apt update
+sudo apt install dnsutils -y
+
+dig +short example.com A
+
+dig example.com A
+
+nslookup -type=A example.com
+
+host -t A example.com
+
+
