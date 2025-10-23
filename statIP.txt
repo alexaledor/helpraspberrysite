@@ -1,0 +1,23 @@
+найзручніше налаштовувати статичний IP через nmcli прямо в консолі, якщо dhcpcd відсутній. Ось покроково:
+
+Подивитися доступні інтерфейси
+nmcli device status
+
+Подивитися існуючі підключення:
+nmcli con show
+
+Встановити статичний IP
+Припустимо, ім’я підключення "Wired connection 1", IP 192.168.1.100/24, шлюз 192.168.1.1, DNS 8.8.8.8 і 8.8.4.4:
+
+sudo nmcli con mod "Wired connection 1" ipv4.addresses 192.168.1.100/24
+sudo nmcli con mod "Wired connection 1" ipv4.gateway 192.168.1.1
+sudo nmcli con mod "Wired connection 1" ipv4.dns "8.8.8.8 8.8.4.4"
+sudo nmcli con mod "Wired connection 1" ipv4.method manual
+
+Перезапустити підключення
+sudo nmcli con up "Wired connection 1"
+
+Перевірка
+ip addr show eth0
+ping 8.8.8.8
+
