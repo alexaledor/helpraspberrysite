@@ -1,0 +1,47 @@
+Подивитися доступні інтерфейси
+nmcli device status
+
+Подивитися існуючі підключення
+nmcli con show
+
+Встановити статичний IP
+sudo nmcli con mod "Wired connection 1" ipv4.addresses 192.168.1.100/24
+sudo nmcli con mod "Wired connection 1" ipv4.gateway 192.168.1.1
+sudo nmcli con mod "Wired connection 1" ipv4.dns "8.8.8.8 8.8.4.4"
+sudo nmcli con mod "Wired connection 1" ipv4.method manual
+
+
+
+
+------------------------------------------------------------------------------
+
+
+Налаштування статичного IP через dhcpcd
+sudo nano /etc/dhcpcd.conf
+
+Додай в кінець файлу блок для eth0 (під кабельний Ethernet):
+interface eth0
+static ip_address=192.168.1.100/24
+static routers=192.168.1.1
+static domain_name_servers=8.8.8.8 8.8.4.4
+
+Збережи файл і перезапусти dhcpcd:
+sudo systemctl restart dhcpcd
+
+Перевірка:
+ip addr show eth0
+ping 8.8.8.8
+
+
+----------------------------------------------------------------------------------------------
+
+Настройка статического IP:
+interface eth0
+static ip_address=192.168.1.100/24
+static routers=192.168.1.1
+static domain_name_servers=192.168.1.1 8.8.8.8
+Перезагрузись:
+sudo reboot
+
+
+

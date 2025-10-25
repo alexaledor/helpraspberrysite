@@ -7,6 +7,7 @@ sudo apt install nginx -y
 Проверим, что Nginx запущен:
 sudo systemctl status nginx
 
+
 Конфиг Nginx
 sudo nano /etc/nginx/sites-available/wordpress
 server {
