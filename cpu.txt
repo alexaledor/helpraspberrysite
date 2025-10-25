@@ -1,0 +1,23 @@
+Подивитися температуру процесора
+vcgencmd measure_temp
+
+оновлення кожні 2 с
+watch -n 2 vcgencmd measure_temp
+
+з накопиченням:
+while true; do echo -n "$(date +"%H:%M:%S") "; vcgencmd measure_temp; sleep 2; done
+
+частота, напруга, температура
+vcgencmd get_config arm_freq
+vcgencmd measure_volts
+vcgencmd measure_temp
+
+Нормально: 40 – 60 °C
+Помірно гаряче: 60 – 70 °C
+Під навантаженням: до 75 °C — допустимо
+Більше 80 °C: небажано → потрібне охолодження (радіатор, вентилятор)
+
+Вентилятор починає крутитись приблизно при 50 °C,
+а повністю розганяється при 70 °C і вище
+
+

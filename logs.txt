@@ -1,0 +1,16 @@
+
+sudo tail -f /var/log/nginx/access.log
+sudo tail -f /var/log/nginx/error.log
+
+оновлення кожні кілька секунд
+sudo watch -n 1 tail -n 20 /var/log/nginx/access.log
+
+Подивитись усі IP у реальному часі
+sudo tail -f /var/log/nginx/access.log | awk '{print $1}'
+
+У реальному часі, але без повторів
+sudo tail -f /var/log/nginx/access.log | awk '{print $1}' | uniq
+
+
+
+whois 195.158.196.129 | grep -i country
