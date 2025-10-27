@@ -21,6 +21,8 @@ vcgencmd measure_temp
 а повністю розганяється при 70 °C і вище
 
 Обороти вентілятора
-cat /sys/class/hwmon/hwmon1/fan1_input
+watch -n 1 'echo -n "Temp: "; awk "{printf \"%.1f°C\", \$1/1000}" /sys/class/thermal/thermal_zone0/temp; echo -n " | PWM: "; cat /sys/class/hwmon/*/pwm1 | awk "{printf \"%s/255\n\", \$1}"'
+
+#cat /sys/class/hwmon/hwmon1/fan1_input - не працює
 
 
