@@ -2,7 +2,8 @@
 vcgencmd measure_temp
 
 Обороти вентілятора
-cat /sys/class/hwmon/hwmon1/fan1_input
+Обороти вентілятора
+watch -n 1 'echo -n "Temp: "; awk "{printf \"%.1f°C\", \$1/1000}" /sys/class/thermal/thermal_zone0/temp; echo -n " | PWM: "; cat /sys/class/hwmon/*/pwm1 | awk "{printf \"%s/255\n\", \$1}"'
 
 оновлення кожні 2 с
 watch -n 2 vcgencmd measure_temp
@@ -22,13 +23,3 @@ vcgencmd measure_temp
 
 Вентилятор починає крутитись приблизно при 50 °C,
 а повністю розганяється при 70 °C і вище
-<<<<<<< HEAD
-
-Обороти вентілятора
-watch -n 1 'echo -n "Temp: "; awk "{printf \"%.1f°C\", \$1/1000}" /sys/class/thermal/thermal_zone0/temp; echo -n " | PWM: "; cat /sys/class/hwmon/*/pwm1 | awk "{printf \"%s/255\n\", \$1}"'
-
-#cat /sys/class/hwmon/hwmon1/fan1_input - не працює
-
-
-=======
->>>>>>> ea07b62ab2b6cd619c0e83c5e44698a4ad11c0ac
