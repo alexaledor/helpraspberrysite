@@ -1,6 +1,9 @@
 Подивитися температуру процесора
 vcgencmd measure_temp
 
+Обороти вентілятора
+cat /sys/class/hwmon/hwmon1/fan1_input
+
 оновлення кожні 2 с
 watch -n 2 vcgencmd measure_temp
 
@@ -19,8 +22,3 @@ vcgencmd measure_temp
 
 Вентилятор починає крутитись приблизно при 50 °C,
 а повністю розганяється при 70 °C і вище
-
-Обороти вентілятора
-cat /sys/class/hwmon/hwmon1/fan1_input
-
-
